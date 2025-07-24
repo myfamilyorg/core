@@ -30,8 +30,6 @@
 #define TEST 0
 #endif /* TEST */
 
-#include <libfam/types.H>
-
 /* Error codes for libfam */
 #define SUCCESS 0
 #define EPERM 1		/* Operation not permitted */

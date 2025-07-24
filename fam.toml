@@ -1,4 +1,41 @@
 [project]
-        name = "core"
+        name = "famcore"
+	obj = {
+		name = "types.c",
+		public = "types.H",
+		headers = { "types.H" }
+	}
+	obj = {
+		name = "errno.c",
+		public = "errno.H",
+		headers = { "types.H", "errno.H", "misc.H", "syscall.H" }
+	}
+	obj = {
+		name = "misc.c",
+		public = "misc.H",
+		headers = { "types.H", "misc.H" }
+	}
+	obj = {
+		name = "init.c",
+		public = "init.H",
+		headers = {
+			"types.H",
+			"errno.H",
+			"misc.H",
+			"init.H",
+			"syscall.H"
+		}
+	}
+	obj = {
+		name = "syscall.c",
+		public = "syscall.H",
+		headers = {
+			"types.H",
+			"errno.H",
+			"misc.H",
+			"init.H",
+			"syscall.H"
+		}
+	}
 [deps]
 

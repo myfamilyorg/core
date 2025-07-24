@@ -23,11 +23,35 @@
  *
  *******************************************************************************/
 
-PUBLIC u64 strlen(const u8 *X) {
-	const u8 *Y;
-	if (X == NULL) return 0;
-	Y = X;
-	while (*X) X++;
-	return X - Y;
+#define MAX_EXIT 64
+
+STATIC i32 has_begun = 0;
+
+void begin(void) {
+	if (!has_begun) {
+		signals_init();
+		has_begun = 1;
+	}
 }
 
+static void (*exit_fns[MAX_EXIT])(void);
+static u64 exit_count = 0;
+
+i32 register_exit(void (*fn)(void)) {
+	u64 index = exit_count++;
+	if (index >= MAX_EXIT) {
+		exit_count--;
+		errno = ENOSPC;
+		return -1;
+	}
+	exit_fns[index] = fn;
+	return 0;
+}
+
+void __attribute__((destructor)) execute_exits(void) {
+	i32 i;
+	for (i = exit_count - 1; i >= 0; i--) {
+		exit_fns[i]();
+	}
+	exit_count = 0;
+}

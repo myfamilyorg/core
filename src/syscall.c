@@ -1,6 +1,29 @@
-bool _debug_no_write = false;
+/********************************************************************************
+ * MIT License
+ *
+ * Copyright (c) 2025 Christopher Gilliard
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ *******************************************************************************/
 
-#define SYS_write 64
+bool _debug_no_write = false;
 
 #define SET_ERR_VALUE         \
 	if (ret < 0) {        \
@@ -12,7 +35,22 @@ bool _debug_no_write = false;
 	SET_ERR_VALUE \
 	return ret;
 
-static __inline__ i64 raw_syscall(i64 sysno, i64 a0, i64 a1, i64 a2, i64 a3,
+#ifdef __aarch64__
+
+#define SYS_write 64
+
+#define SYSCALL_EXIT                 \
+	__asm__ volatile(            \
+	    "mov x8, #93\n"          \
+	    "mov x0, %0\n"           \
+	    "svc #0\n"               \
+	    :                        \
+	    : "r"((i64)status)       \
+	    : "x8", "x0", "memory"); \
+	while (true) {               \
+	}
+
+STATIC __inline__ i64 raw_syscall(i64 sysno, i64 a0, i64 a1, i64 a2, i64 a3,
 				  i64 a4, i64 a5) {
 	i64 result;
 	__asm__ volatile(
@@ -31,14 +69,17 @@ static __inline__ i64 raw_syscall(i64 sysno, i64 a0, i64 a1, i64 a2, i64 a3,
 	return result;
 }
 
-static __inline__ i64 syscall_write(i32 fd, const void *buf, u64 count) {
-	return raw_syscall(SYS_write, (i64)fd, (i64)buf, (i64)count, 0, 0, 0);
-}
+#endif /* __aarch64__ */
 
 PUBLIC i64 write(i32 fd, const void *buf, u64 count) {
 	i64 ret;
 	if ((fd == 1 || fd == 2) && _debug_no_write) return count;
 	ret = raw_syscall(SYS_write, (i64)fd, (i64)buf, (i64)count, 0, 0, 0);
 	SET_ERR
+}
+
+PUBLIC void exit(i32 status) {
+	execute_exits();
+	SYSCALL_EXIT
 }
 

@@ -23,11 +23,15 @@
  *
  *******************************************************************************/
 
-PUBLIC u64 strlen(const u8 *X) {
-	const u8 *Y;
-	if (X == NULL) return 0;
-	Y = X;
-	while (*X) X++;
-	return X - Y;
-}
+#ifndef _INIT_H
+#define _INIT_H
 
+/* Init tasks */
+void begin(void);
+void signals_init(void);
+
+/* Exit tasks */
+void execute_exits(void);
+i32 register_exit(void (*fn)(void));
+
+#endif /* _INIT_H */
