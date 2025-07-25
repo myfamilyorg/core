@@ -28,5 +28,11 @@
 
 i64 write(i32 fd, const void *buf, u64 count);
 void exit(i32 status);
+i32 setitimer(i32 which, const struct itimerval *new_value,
+	      struct itimerval *old_value);
+i32 rt_sigaction(i32 signum, const struct rt_sigaction *act,
+		 struct rt_sigaction *oldact, u64 sigsetsize);
+void restorer(void);
+i32 gettimeofday(struct timeval *tv, void *tz);
 
 #endif /* _SYSCALL_H */

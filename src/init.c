@@ -37,7 +37,7 @@ void begin(void) {
 static void (*exit_fns[MAX_EXIT])(void);
 static u64 exit_count = 0;
 
-i32 register_exit(void (*fn)(void)) {
+PUBLIC i32 register_exit(void (*fn)(void)) {
 	u64 index = exit_count++;
 	if (index >= MAX_EXIT) {
 		exit_count--;

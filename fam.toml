@@ -3,12 +3,31 @@
 	obj = {
 		name = "types.c",
 		public = "types.H",
-		headers = { "types.H" }
+		headers = { "types.H", "syscall.H", "misc.H" }
 	}
 	obj = {
 		name = "errno.c",
 		public = "errno.H",
 		headers = { "types.H", "errno.H", "misc.H", "syscall.H" }
+	}
+	obj = {
+		name = "signal.c",
+		headers = {
+			"types.H",
+			"errno.H",
+			"syscall.H",
+			"misc.H",
+			"syscall_const.H",
+			"limits.H"
+			"sys.H"
+		}
+	}
+	obj = {
+		name = "sysext.c",
+		headers = {
+			"types.H",
+			"syscall.H"
+		}
 	}
 	obj = {
 		name = "misc.c",

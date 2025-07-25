@@ -38,6 +38,9 @@ bool _debug_no_write = false;
 #ifdef __aarch64__
 
 #define SYS_write 64
+#define SYS_setitimer 103
+#define SYS_gettimeofday 169
+#define SYS_rt_sigaction 134
 
 #define SYSCALL_EXIT                 \
 	__asm__ volatile(            \
@@ -49,6 +52,12 @@ bool _debug_no_write = false;
 	    : "x8", "x0", "memory"); \
 	while (true) {               \
 	}
+
+#define SYSCALL_RESTORER     \
+	__asm__ volatile(    \
+	    "mov x8, #139\n" \
+	    "svc #0\n" ::    \
+		: "x8", "memory");
 
 STATIC __inline__ i64 raw_syscall(i64 sysno, i64 a0, i64 a1, i64 a2, i64 a3,
 				  i64 a4, i64 a5) {
@@ -78,8 +87,30 @@ PUBLIC i64 write(i32 fd, const void *buf, u64 count) {
 	SET_ERR
 }
 
+i32 setitimer(i32 which, const struct itimerval *new_value,
+	      struct itimerval *old_value) {
+	i32 ret = (i32)raw_syscall(SYS_setitimer, (i64)which, (i64)new_value,
+				   (i64)old_value, 0, 0, 0);
+	SET_ERR
+}
+
+void restorer(void){SYSCALL_RESTORER}
+
 PUBLIC void exit(i32 status) {
 	execute_exits();
 	SYSCALL_EXIT
+}
+
+i32 gettimeofday(struct timeval *tv, void *tz) {
+	i32 ret =
+	    (i32)raw_syscall(SYS_gettimeofday, (i64)tv, (i64)tz, 0, 0, 0, 0);
+	SET_ERR
+}
+
+i32 rt_sigaction(i32 signum, const struct rt_sigaction *act,
+		 struct rt_sigaction *oldact, u64 sigsetsize) {
+	i32 ret = (i32)raw_syscall(SYS_rt_sigaction, (i64)signum, (i64)act,
+				   (i64)oldact, (i64)sigsetsize, 0, 0);
+	SET_ERR
 }
 
