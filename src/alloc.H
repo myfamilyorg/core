@@ -27,8 +27,12 @@
 #define _ALLOC_H
 
 #ifndef MEMSAN
+#ifdef TEST
+#define MEMSAN 1
+#else
 #define MEMSAN 0 /* Disabled by default */
-#endif
+#endif		 /* TEST */
+#endif		 /* MEMSAN */
 
 #ifndef PAGE_SIZE
 #define PAGE_SIZE ((u64)(4 * 4096))
