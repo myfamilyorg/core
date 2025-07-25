@@ -193,6 +193,70 @@ PUBLIC u64 u128_to_string_impl(u8 *buf, u128 v, bool hex, bool upper) {
 	return j;
 }
 
+u128 __udivti3(u128 a, u128 b) {
+	u64 b_lo;
+	u64 a_hi;
+	u64 a_lo;
+	u128 quotient;
+	u128 remainder;
+	i32 shift;
+
+	/* Handle division by zero */
+	if (b == 0) __builtin_trap();
+
+	/* Early return if a < b */
+	if (a < b) {
+		return 0;
+	}
+
+	/* If b fits in 64 bits, optimize */
+	if ((b >> 64) == 0) {
+		b_lo = (u64)b;
+		if (b_lo == 0) __builtin_trap();
+
+		a_hi = (u64)(a >> 64);
+		a_lo = (u64)a;
+
+		if (a_hi == 0) {
+			return (u128)(a_lo / b_lo);
+		}
+
+		/* Compute quotient for a_hi != 0 */
+		quotient = (u128)a_hi / b_lo;
+		quotient <<= 32;
+		quotient |= (u128)(a_lo >> 32) / b_lo;
+		quotient <<= 32;
+		quotient |= (u128)(a_lo & 0xffffffff) / b_lo;
+		return quotient;
+	}
+
+	/* General 128-bit case */
+	quotient = 0;
+	remainder = a;
+
+	/* Align b with remainder's MSB */
+	shift = 0;
+	while ((b << shift) <= remainder && shift < 128) {
+		shift++;
+	}
+	if (shift > 0) {
+		shift--; /* Adjust to highest valid shift */
+		b <<= shift;
+	}
+
+	/* Division loop */
+	while (shift >= 0) {
+		if (remainder >= b) {
+			remainder -= b;
+			quotient |= ((u128)1) << shift;
+		}
+		b >>= 1;
+		shift--;
+	}
+
+	return quotient;
+}
+
 u128 __umodti3(u128 a, u128 b) {
 	u64 b_lo;
 	u64 a_hi;
