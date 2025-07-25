@@ -68,6 +68,8 @@
 		name = "colors.c"
 		public = "colors.H"
 		headers = {
+			"types.H",
+			"env.H",
 			"colors.H"
 		}
 	}
@@ -79,7 +81,7 @@
 	obj = {
 		name = "env.c",
 		public = "env.H",
-		headers = { "types.H", "env.H" }
+		headers = { "types.H", "alloc.H", "misc.H", "env.H" }
 	}
 	obj = {
 		name = "init.c",

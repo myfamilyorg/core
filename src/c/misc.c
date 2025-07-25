@@ -37,6 +37,14 @@ PUBLIC u8 *strcpy(u8 *dest, const u8 *src) {
 	return dest;
 }
 
+PUBLIC u8 *strchr(const u8 *s, i32 c) {
+	while (*s) {
+		if (*s == c) return (u8 *)s;
+		s++;
+	}
+	return (*s == c) ? (u8 *)s : 0;
+}
+
 PUBLIC i32 strcmp(const u8 *X, const u8 *Y) {
 	if (X == NULL || Y == NULL) {
 		if (X == Y) return 0;
@@ -49,14 +57,6 @@ PUBLIC i32 strcmp(const u8 *X, const u8 *Y) {
 	if ((u8)*X > (u8)*Y) return 1;
 	if ((u8)*Y > (u8)*X) return -1;
 	return 0;
-}
-
-PUBLIC u8 *strchr(const u8 *s, i32 c) {
-	while (*s) {
-		if (*s == c) return (u8 *)s;
-		s++;
-	}
-	return (*s == c) ? (u8 *)s : 0;
 }
 
 PUBLIC u8 *substr(const u8 *s, const u8 *sub) {
@@ -458,4 +458,3 @@ PUBLIC u64 double_to_string(u8 *buf, double v, i32 max_decimals) {
 	buf[pos] = '\0';
 	return pos;
 }
-

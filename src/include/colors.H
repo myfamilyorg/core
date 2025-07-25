@@ -26,8 +26,6 @@
 #ifndef _COLORS_H
 #define _COLORS_H
 
-#include <libfam/types.H>
-
 const u8 *get_dimmed(void);
 #define DIMMED get_dimmed()
 

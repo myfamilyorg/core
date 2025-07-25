@@ -23,10 +23,6 @@
  *
  *******************************************************************************/
 
-#include <libfam/alloc.H>
-#include <libfam/env.H>
-#include <libfam/misc.H>
-
 #ifndef MEMSAN
 #define MEMSAN 0
 #endif /* MEMSAN */

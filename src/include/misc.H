@@ -35,5 +35,7 @@ u128 string_to_uint128(const u8 *buf, u64 len);
 i128 string_to_int128(const u8 *buf, u64 len);
 void *memset(void *ptr, i32 x, u64 n);
 u8 *substr(const u8 *s, const u8 *sub);
+u8 *strchr(const u8 *s, i32 c);
+void *memorymove(void *dest, const void *src, u64 n);
 
 #endif /* _MISC_H */

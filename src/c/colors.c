@@ -23,11 +23,6 @@
  *
  *******************************************************************************/
 
-#include <libfam/colors.H>
-#include <libfam/env.H>
-#include <libfam/misc.H>
-#include <libfam/types.H>
-
 PUBLIC i32 no_color(void) {
 	u8 *noc = getenv("NO_COLOR");
 	return noc != NULL;
