@@ -23,18 +23,14 @@
  *
  *******************************************************************************/
 
-#ifndef _SYSCALL_H
-#define _SYSCALL_H
+#ifndef _ENV_H
+#define _ENV_H
 
-i64 write(i32 fd, const void *buf, u64 count);
-void exit(i32 status);
-i32 setitimer(i32 which, const struct itimerval *new_value,
-	      struct itimerval *old_value);
-i32 rt_sigaction(i32 signum, const struct rt_sigaction *act,
-		 struct rt_sigaction *oldact, u64 sigsetsize);
-void restorer(void);
-i32 gettimeofday(struct timeval *tv, void *tz);
-i32 munmap(void *addr, u64 len);
-void *mmap(void *addr, u64 length, i32 prot, i32 flags, i32 fd, i64 offset);
+extern u8 **environ;
 
-#endif /* _SYSCALL_H */
+u8 *getenv(const u8 *name);
+i32 unsetenv(const u8 *name);
+i32 setenv(const u8 *name, const u8 *value, i32 overwrite);
+void init_environ(void);
+
+#endif /* _ENV_H */

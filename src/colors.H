@@ -23,18 +23,36 @@
  *
  *******************************************************************************/
 
-#ifndef _SYSCALL_H
-#define _SYSCALL_H
+#ifndef _COLORS_H
+#define _COLORS_H
 
-i64 write(i32 fd, const void *buf, u64 count);
-void exit(i32 status);
-i32 setitimer(i32 which, const struct itimerval *new_value,
-	      struct itimerval *old_value);
-i32 rt_sigaction(i32 signum, const struct rt_sigaction *act,
-		 struct rt_sigaction *oldact, u64 sigsetsize);
-void restorer(void);
-i32 gettimeofday(struct timeval *tv, void *tz);
-i32 munmap(void *addr, u64 len);
-void *mmap(void *addr, u64 length, i32 prot, i32 flags, i32 fd, i64 offset);
+#include <libfam/types.H>
 
-#endif /* _SYSCALL_H */
+const u8 *get_dimmed(void);
+#define DIMMED get_dimmed()
+
+const u8 *get_red(void);
+#define RED get_red()
+
+const u8 *get_bright_red(void);
+#define BRIGHT_RED get_bright_red()
+
+const u8 *get_green(void);
+#define GREEN get_green()
+
+const u8 *get_yellow(void);
+#define YELLOW get_yellow()
+
+const u8 *get_cyan(void);
+#define CYAN get_cyan()
+
+const u8 *get_magenta(void);
+#define MAGENTA get_magenta()
+
+const u8 *get_blue(void);
+#define BLUE get_blue()
+
+const u8 *get_reset(void);
+#define RESET get_reset()
+
+#endif /* _COLORS_H */

@@ -23,18 +23,49 @@
  *
  *******************************************************************************/
 
-#ifndef _SYSCALL_H
-#define _SYSCALL_H
+#ifndef _ALLOC_H
+#define _ALLOC_H
 
-i64 write(i32 fd, const void *buf, u64 count);
-void exit(i32 status);
-i32 setitimer(i32 which, const struct itimerval *new_value,
-	      struct itimerval *old_value);
-i32 rt_sigaction(i32 signum, const struct rt_sigaction *act,
-		 struct rt_sigaction *oldact, u64 sigsetsize);
-void restorer(void);
-i32 gettimeofday(struct timeval *tv, void *tz);
-i32 munmap(void *addr, u64 len);
-void *mmap(void *addr, u64 length, i32 prot, i32 flags, i32 fd, i64 offset);
+#ifndef MEMSAN
+#define MEMSAN 0 /* Disabled by default */
+#endif
 
-#endif /* _SYSCALL_H */
+#ifndef PAGE_SIZE
+#define PAGE_SIZE ((u64)(4 * 4096))
+#endif /* PAGE_SIZE */
+
+#ifndef CHUNK_SIZE
+#define CHUNK_SIZE ((u64)(0x1 << 22)) /* 4mb */
+#endif
+
+#ifndef MAX_SLAB_SIZE
+#define MAX_SLAB_SIZE ((u64)(CHUNK_SIZE >> 2)) /* 1mb */
+#endif
+
+typedef struct Alloc Alloc;
+
+typedef enum { ALLOC_TYPE_MAP, ALLOC_TYPE_SMAP, ALLOC_TYPE_FMAP } AllocType;
+
+Alloc *alloc_init(AllocType t, u64 size, ...);
+void alloc_destroy(Alloc *a);
+void *alloc_impl(Alloc *a, u64 size);
+void release_impl(Alloc *a, void *ptr);
+void *resize_impl(Alloc *a, void *ptr, u64 size);
+
+void *alloc(u64 size);
+void release(void *ptr);
+void *resize(void *ptr, u64 size);
+void *calloc(u64 nelem, u64 elsize);
+
+#if TEST == 1
+u64 allocated_bytes_impl(Alloc *a);
+void reset_allocated_bytes_impl(Alloc *a);
+u64 get_allocated_bytes(void);
+void reset_allocated_bytes(void);
+
+extern u64 _debug_cas_loop;
+extern u64 _debug_alloc_failure;
+extern u64 _debug_alloc_failure_bypass_count;
+#endif /* TEST */
+
+#endif /* _ALLOC_H */

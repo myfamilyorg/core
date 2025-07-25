@@ -23,18 +23,84 @@
  *
  *******************************************************************************/
 
-#ifndef _SYSCALL_H
-#define _SYSCALL_H
+#include <libfam/colors.H>
+#include <libfam/env.H>
+#include <libfam/misc.H>
+#include <libfam/types.H>
 
-i64 write(i32 fd, const void *buf, u64 count);
-void exit(i32 status);
-i32 setitimer(i32 which, const struct itimerval *new_value,
-	      struct itimerval *old_value);
-i32 rt_sigaction(i32 signum, const struct rt_sigaction *act,
-		 struct rt_sigaction *oldact, u64 sigsetsize);
-void restorer(void);
-i32 gettimeofday(struct timeval *tv, void *tz);
-i32 munmap(void *addr, u64 len);
-void *mmap(void *addr, u64 length, i32 prot, i32 flags, i32 fd, i64 offset);
+PUBLIC i32 no_color(void) {
+	u8 *noc = getenv("NO_COLOR");
+	return noc != NULL;
+}
 
-#endif /* _SYSCALL_H */
+PUBLIC const u8 *get_dimmed(void) {
+	if (no_color()) {
+		return "";
+	} else {
+		return "\x1b[2m";
+	}
+}
+
+PUBLIC const u8 *get_red(void) {
+	if (no_color()) {
+		return "";
+	} else {
+		return "\x1b[31m";
+	}
+}
+
+PUBLIC const u8 *get_bright_red(void) {
+	if (no_color()) {
+		return "";
+	} else {
+		return "\x1b[91m";
+	}
+}
+
+PUBLIC const u8 *get_green(void) {
+	if (no_color()) {
+		return "";
+	} else {
+		return "\x1b[32m";
+	}
+}
+
+PUBLIC const u8 *get_yellow(void) {
+	if (no_color()) {
+		return "";
+	} else {
+		return "\x1b[33m";
+	}
+}
+
+PUBLIC const u8 *get_cyan(void) {
+	if (no_color()) {
+		return "";
+	} else {
+		return "\x1b[36m";
+	}
+}
+
+PUBLIC const u8 *get_magenta(void) {
+	if (no_color()) {
+		return "";
+	} else {
+		return "\x1b[35m";
+	}
+}
+
+PUBLIC const u8 *get_blue(void) {
+	if (no_color()) {
+		return "";
+	} else {
+		return "\x1b[34m";
+	}
+}
+
+PUBLIC const u8 *get_reset(void) {
+	if (no_color()) {
+		return "";
+	} else {
+		return "\x1b[0m";
+	}
+}

@@ -23,16 +23,63 @@
 		}
 	}
 	obj = {
+		name = "format.c",
+		public = "format.H",
+		headers = {
+			"types.H",
+			"alloc.H",
+			"misc.H",
+			"format.H"
+		}
+	}
+	obj = {
+		name = "atomic.c",
+		public = "atomic.H",
+		headers = {
+			"types.H",
+			"atomic.H"
+		}
+	}
+	obj = {
+		name = "alloc.c",
+		public = "alloc.H",
+		headers = {
+			"types.H",
+			"errno.H",
+			"env.H",
+			"limits.H",
+			"misc.H",
+			"atomic.H",
+			"syscall.H",
+			"format.H",
+			"sys.H",
+			"alloc.H"
+		}
+	}
+	obj = {
 		name = "sysext.c",
 		headers = {
 			"types.H",
-			"syscall.H"
+			"syscall.H",
+			"syscall_const.H"
+		}
+	}
+	obj = {
+		name = "colors.c"
+		public = "colors.H"
+		headers = {
+			"colors.H"
 		}
 	}
 	obj = {
 		name = "misc.c",
 		public = "misc.H",
-		headers = { "types.H", "misc.H" }
+		headers = { "types.H", "misc.H", "limits.H", "errno.H" }
+	}
+	obj = {
+		name = "env.c",
+		public = "env.H",
+		headers = { "types.H", "env.H" }
 	}
 	obj = {
 		name = "init.c",

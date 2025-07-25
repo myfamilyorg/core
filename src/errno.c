@@ -25,6 +25,7 @@
 
 i32 __err_value = 0;
 PUBLIC i32 *__error(void) { return &__err_value; }
+i32 __err_location(void) { &__err_value; }
 
 PUBLIC void perror(const u8 *s) {
 	i32 len = 0, v = 2;

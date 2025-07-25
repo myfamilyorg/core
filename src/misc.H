@@ -27,5 +27,13 @@
 #define _MISC_H
 
 u64 strlen(const u8 *S);
+u8 *strcpy(u8 *dest, const u8 *src);
+void *memcpy(void *dst, const void *src, u64 n);
+u64 u128_to_string_impl(u8 *buf, u128 v, bool hex, bool upper);
+u64 i128_to_string_impl(u8 *buf, i128 v, bool hex, bool upper);
+u128 string_to_uint128(const u8 *buf, u64 len);
+i128 string_to_int128(const u8 *buf, u64 len);
+void *memset(void *ptr, i32 x, u64 n);
+u8 *substr(const u8 *s, const u8 *sub);
 
 #endif /* _MISC_H */

@@ -24,6 +24,7 @@
  *******************************************************************************/
 
 bool _debug_no_write = false;
+bool _debug_no_exit = false;
 
 #define SET_ERR_VALUE         \
 	if (ret < 0) {        \
@@ -35,12 +36,21 @@ bool _debug_no_write = false;
 	SET_ERR_VALUE \
 	return ret;
 
+#define SET_ERR_I64_VOID_PTR       \
+	if ((i64)ret < 0) {        \
+		errno = -(i64)ret; \
+		return (void *)-1; \
+	}                          \
+	return ret;
+
 #ifdef __aarch64__
 
 #define SYS_write 64
 #define SYS_setitimer 103
-#define SYS_gettimeofday 169
 #define SYS_rt_sigaction 134
+#define SYS_gettimeofday 169
+#define SYS_munmap 215
+#define SYS_mmap 222
 
 #define SYSCALL_EXIT                 \
 	__asm__ volatile(            \
@@ -111,6 +121,19 @@ i32 rt_sigaction(i32 signum, const struct rt_sigaction *act,
 		 struct rt_sigaction *oldact, u64 sigsetsize) {
 	i32 ret = (i32)raw_syscall(SYS_rt_sigaction, (i64)signum, (i64)act,
 				   (i64)oldact, (i64)sigsetsize, 0, 0);
+	SET_ERR
+}
+
+void *mmap(void *addr, u64 length, i32 prot, i32 flags, i32 fd, i64 offset) {
+	void *ret;
+	ret = (void *)(u64)raw_syscall(SYS_mmap, (i64)addr, (i64)length,
+				       (i64)prot, (i64)flags, (i64)fd,
+				       (i64)offset);
+	SET_ERR_I64_VOID_PTR
+}
+
+PUBLIC i32 munmap(void *addr, u64 len) {
+	i32 ret = (i32)raw_syscall(SYS_munmap, (i64)addr, (i64)len, 0, 0, 0, 0);
 	SET_ERR
 }
 
